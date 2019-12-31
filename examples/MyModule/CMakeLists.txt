@@ -32,17 +32,14 @@ cmake_minimum_required( VERSION 2.8.12 )
 #           https://nest.github.io/nest-simulator/extension_modules
 
 # 1) Name your module here, i.e. add later with -Dexternal-modules=my:
-set( SHORT_NAME my )
+set( SHORT_NAME curious_connection )
 
 #    the complete module name is here:
 set( MODULE_NAME ${SHORT_NAME}module )
 
 # 2) Add all your sources here
 set( MODULE_SOURCES
-    mymodule.h mymodule.cpp
-    pif_psc_alpha.cpp pif_psc_alpha.h
-    drop_odd_spike_connection.h
-    step_pattern_builder.h step_pattern_builder.cpp
+    curious_connection.h curious_connection.cpp
     )
 
 # 3) We require a header name like this:
@@ -50,8 +47,8 @@ set( MODULE_HEADER ${MODULE_NAME}.h )
 # containing the class description of the class extending the SLIModule
 
 # 4) Specify your module version
-set( MODULE_VERSION_MAJOR 1 )
-set( MODULE_VERSION_MINOR 0 )
+set( MODULE_VERSION_MAJOR 0 )
+set( MODULE_VERSION_MINOR 1 )
 set( MODULE_VERSION "${MODULE_VERSION_MAJOR}.${MODULE_VERSION_MINOR}" )
 
 # 5) Leave the rest as is. All files in `sli` will be installed to
@@ -285,8 +282,8 @@ install( DIRECTORY sli DESTINATION ${CMAKE_INSTALL_DATADIR} )
 
 # Install help --- based on doc/CMakeLists.txt
 # Install only if Py >= 2.7.8 and NEST was installed with help
-if ( ( NOT CMAKE_CROSSCOMPILING ) 
-     AND PYTHON_EXECUTABLE 
+if ( ( NOT CMAKE_CROSSCOMPILING )
+     AND PYTHON_EXECUTABLE
      AND ( ${PYTHON_VERSION_STRING} VERSION_GREATER "2.7.7" )
      AND ( IS_DIRECTORY ${NEST_INSTALL_PREFIX}/${NEST_INSTALL_DOCDIR}/help )
    )
@@ -300,14 +297,14 @@ if ( ( NOT CMAKE_CROSSCOMPILING )
          WORKING_DIRECTORY \"${NEST_INSTALL_PREFIX}/${NEST_INSTALL_DATADIR}/help_generator\"
          )"
       )
-  
+
     # Copy the local doc/help directory to the global installation
     # directory for documentation.
     install( DIRECTORY "${PROJECT_BINARY_DIR}/doc/help"
       DESTINATION "${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_DOCDIR}"
       OPTIONAL
       )
-  
+
     # Update the global help index to include all help files in
     # the global installation directory for documentation.
     install( CODE

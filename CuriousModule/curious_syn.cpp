@@ -3,14 +3,14 @@
 #include "connection.h"
 #include "static_connection.h"
 
-#include "curious_connection.h"
+#include "curious_syn.h"
 
-mynest::CuriousConnection (nest::Node target,
-                           double weight,
-                           nest::delay delay,
-                           nest::rport port,
-                           double curiosity = 0.0,
-                           double rate = 0.01)
+curiousnest::CuriousSyn (nest::Node target,
+                    double weight,
+                    nest::delay delay,
+                    nest::rport port,
+                    double curiosity = 0.0,
+                    double rate = 0.01)
   {
     target_ = target;
     weight_ = weight;
@@ -27,7 +27,7 @@ double compute_eligibility(const std::vector< spikecounter > &spikes, const doub
 }
 
 template <typename targetidentifierT>
-void mynest::CuriousConnection< targetidentifierT >::trigger_update_weight
+void curiousnest::CuriousSyn< targetidentifierT >::trigger_update_weight
 ( const thread tr,
   const std::vector< spikecounter > &spikes,
   const double t_trig,

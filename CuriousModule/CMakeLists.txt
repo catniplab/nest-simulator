@@ -32,17 +32,15 @@ cmake_minimum_required( VERSION 2.8.12 )
 #           https://nest.github.io/nest-simulator/extension_modules
 
 # 1) Name your module here, i.e. add later with -Dexternal-modules=my:
-set( SHORT_NAME my )
+set( SHORT_NAME curious )
 
 #    the complete module name is here:
 set( MODULE_NAME ${SHORT_NAME}module )
 
 # 2) Add all your sources here
 set( MODULE_SOURCES
-    mymodule.h mymodule.cpp
-    pif_psc_alpha.cpp pif_psc_alpha.h
-    drop_odd_spike_connection.h
-    step_pattern_builder.h step_pattern_builder.cpp
+    curiousmodule.h curiousmodule.cpp
+    curious_syn.h curious_syn.cpp
     )
 
 # 3) We require a header name like this:
@@ -50,8 +48,8 @@ set( MODULE_HEADER ${MODULE_NAME}.h )
 # containing the class description of the class extending the SLIModule
 
 # 4) Specify your module version
-set( MODULE_VERSION_MAJOR 1 )
-set( MODULE_VERSION_MINOR 0 )
+set( MODULE_VERSION_MAJOR 0 )
+set( MODULE_VERSION_MINOR 1 )
 set( MODULE_VERSION "${MODULE_VERSION_MAJOR}.${MODULE_VERSION_MINOR}" )
 
 # 5) Leave the rest as is. All files in `sli` will be installed to

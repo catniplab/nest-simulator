@@ -1,5 +1,5 @@
-#ifndef CURIOUS_CONNECTION
-#define CURIOUS_CONNECTION
+#ifndef CURIOUS_SYN
+#define CURIOUS_SYN
 
 #include "slifunction.h"
 #include "slimodule.h"
@@ -7,10 +7,10 @@
 #include "connection.h"
 #include "static_connection.h"
 
-namespace mynest
+namespace curiousnest
 {
   template <typename targetidentifierT>
-  class CuriousConnection : public SLIModule
+  class CuriousSyn : public StaticConnection
   {
 
     private:
@@ -29,19 +29,19 @@ namespace mynest
       //! Shortcut for base class
       typedef nest::Connection< targetidentifierT > ConnectionBase;
 
-      CuriousConnection () : ConnectionBase(), weight(1.0) {}
-      ~CuriousConnection () {}
+      CuriousSyn () : ConnectionBase(), weight(1.0) {}
+      ~CuriousSyn () {}
 
       void trigger_update_weight( const thread tr,
                                   const std::vector< spikecounter > &spikes,
                                   const double t_trig,
                                   const CommonSynapseProperties &cp);
 
-      void send (nest::Event & e,
+      void send (nest::Event &e,
                  double_t t_lastspike,
                  const nest::CommonSynapseProperties &cp
-                 const thread tr,
-                 const std:vector< spikecounter > &spikes);
+                 const nest::thread tr,
+                 const std:vector< nest::spikecounter > &spikes);
 
       //! Store connection status information in dictionary
       void get_status( DictionaryDatum& d ) const;
@@ -61,12 +61,12 @@ namespace mynest
   };
 
   template <typename targetidentifierT>
-  inline void mynest::CuriousConnection< targetidentifierT >::send
+  inline void curiousnest::CuriousSyn< targetidentifierT >::send
   ( nest::Event &e,
     double_t t_lastspike,
     const nest::CommonSynapseProperties &cp,
-    const thread tr,
-    const std::vector< spikecounter > &spikes )
+    const nest::thread tr,
+    const std::vector< nest::spikecounter > &spikes )
   {
     trigger_update_weight(tr, &spikes, t_lastspike, &cp);
 
@@ -78,7 +78,7 @@ namespace mynest
   }
 
   template <typename targetidentifierT>
-  void CuriousConnection< targetidentifierT >::get_status( DictionaryDatum& d ) const
+  void CuriousSyn< targetidentifierT >::get_status( DictionaryDatum& d ) const
   {
     ConnectionBase::get_status(d);
     def< double >(d, nest::names::weight, weight_);
@@ -86,7 +86,7 @@ namespace mynest
   }
 
   template < typename targetidentifierT >
-  void CuriousConnection< targetidentifierT >::set_status
+  void CuriousSyn< targetidentifierT >::set_status
   (const DictionaryDatum& d,   nest::ConnectorModel& cm)
   {
     ConnectionBase::set_status( d, cm );

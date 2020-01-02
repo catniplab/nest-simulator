@@ -11,28 +11,29 @@ using namespace std;
 
 namespace curiousnest
 {
-  //! Type to use for representing common synapse properties
-  typedef nest::CommonSynapseProperties CommonPropertiesType;
+
+  typedef nest::CommonSynapseProperties CommonProperties;
 
   template <typename targetidentifierT>
   class CuriousSynapse : public nest::Connection< targetidentifierT >
   {
     private:
       map<string, double> curious_properties_;
+      vector< nest::spikecounter > spikes;
 
     public:
 
       CuriousSynapse (map<string, double> curious_properties) {}
       ~CuriousSynapse () {}
 
-      void trigger_update_weight( const thread tr,
-                                  const std::vector< spikecounter >& spikes,
-                                  const double t_trig,
-                                  const CommonSynapseProperties& cp);
+      void update_weight( const thread tr,
+                          const std::vector< spikecounter >& spikes,
+                          const double t_trig,
+                          const CommonProperties& cp );
 
       void send ( nest::Event& e,
                   double_t t_lastspike,
-                  const nest::CommonSynapseProperties& cp
+                  const CommonProperties& cp
                   const nest::thread thr,
                   const std:vector< nest::spikecounter >& spikes );
 
@@ -62,13 +63,13 @@ namespace curiousnest
         {
           curious_properties_["learning_rate"] = curious_properties["learning_rate"];
         }
-        if (curious_properties.count("weight") > 0)
-        {
-          curious_properties_["weight"] = curious_properties["weight"];
-        }
         if (curious_properties.count("max_weight") > 0)
         {
           curious_properties_["max_weight"] = curious_properties["max_weight"];
+        }
+        if (curious_properties.count("min_weight") > 0)
+        {
+          curious_properties_["min_weight"] = curious_properties["min_weight"];
         }
         if (curious_properties.count("reward") > 0)
         {
@@ -103,26 +104,22 @@ namespace curiousnest
   };
 
   template <typename targetidentifierT>
-  inline void curiousnest::CuriousSynapse< targetidentifierT >::send
-  ( nest::Event& e,
-    double_t t_lastspike,
-    const nest::CommonSynapseProperties& cp,
-    const nest::thread thr,
-    const std::vector< nest::spikecounter >& spikes
-  )
+  void curiousnest::CuriousSynapse< targetidentifierT >::send ( nest::Event& e,
+                                                                double_t t_lastspike,
+                                                                const CommonProperties& cp,
+                                                                const nest::thread thr )
   {
-    trigger_update_weight(tr, &spikes, t_lastspike, &cp);
+    update_weight(tr, &spikes, t_lastspike, &cp);
 
-    e.set_receiver(target_);
     e.set_weight(weight_);
-    e.set_delay_steps(delay_);
-    e.set_receiver(*nest::Connection< targetIdentifierT >::get_target( thr ));
-    e.set_rport(rport_);
+    e.set_delay_steps(Connection::get_delay_steps());
+    e.set_receiver(*nest::Connection< targetIdentifierT >::get_target(thr));
+    e.set_rport(Connection::get_rport());
     e();
   }
 
   template <typename targetidentifierT>
-  void CuriousSynapse< targetidentifierT >::get_status( DictionaryDatum& d ) const
+  void CuriousSynapse< targetidentifierT >::get_status(DictionaryDatum& d) const
   {
     ConnectionBase::get_status(d);
     def< double >(d, nest::names::weight, weight_);

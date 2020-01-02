@@ -1,5 +1,5 @@
 #include "curiousmodule.h"
-#include "curious_syn.h"
+#include "curious_synapse.h"
 
 // Generated includes:
 #include "config.h"
@@ -78,7 +78,7 @@ void curiousnest::CuriousModule::init( SLIInterpreter* i )
      even further, but limits the number of available rports. Please see
      Kunkel et al, Front Neurofinfom 8:78 (2014), Sec 3.3.2, for details.
   */
-  nest::kernel().model_manager.register_connection_model< CuriousSyn< nest::TargetIdentifierPtrRport > >( "curious_syn" );
+  nest::kernel().model_manager.register_connection_model< CuriousSynapse< nest::TargetIdentifierPtrRport > >( "curious_synapse" );
 }
 
-//CuriousModule::init()
+//curiousnest::CuriousModule::init()

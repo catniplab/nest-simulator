@@ -9,10 +9,6 @@
 namespace curiousnest
 {
 
-/**
- * Class defining your model.
- * @note For each model, you must define one such class, with a unique name.
- */
 class CuriousModule : public SLIModule
 {
 public:
@@ -42,7 +38,7 @@ public:
 
   /**
    * Return the name of a sli file to execute when CuriousModule is loaded.
-   * This mechanism can be used to define SLI commands associated with your
+   * This mechanism can be used to define SLI commands associated with the
    * module, in particular, set up type tries for functions you have defined.
    */
   const std::string commandstring( void ) const;

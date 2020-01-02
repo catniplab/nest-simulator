@@ -1,26 +1,5 @@
-/*
- *  curiousmodule.cpp
- *
- *  This file is part of NEST.
- *
- *  Copyright (C) 2004 The NEST Initiative
- *
- *  NEST is free software: you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation, either version 2 of the License, or
- *  (at your option) any later version.
- *
- *  NEST is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  You should have received a copy of the GNU General Public License
- *  along with NEST.  If not, see <http://www.gnu.org/licenses/>.
- *
- */
-
 #include "curiousmodule.h"
+#include "curious_syn.h"
 
 // Generated includes:
 #include "config.h"
@@ -54,6 +33,7 @@
 #if defined( LTX_MODULE ) | defined( LINKED_MODULE )
 curiousnest::CuriousModule curiousmodule_LTX_mod;
 #endif
+
 // -- DynModule functions ------------------------------------------------------
 
 curiousnest::CuriousModule::CuriousModule()
@@ -73,7 +53,7 @@ curiousnest::CuriousModule::~CuriousModule()
 const std::string
 curiousnest::CuriousModule::name( void ) const
 {
-  return std::string( "My NEST Module" ); // Return name of the module
+  return std::string( "curiousmodule" );
 }
 
 const std::string
@@ -85,15 +65,9 @@ curiousnest::CuriousModule::commandstring( void ) const
 
 //-------------------------------------------------------------------------------------
 
-void
-curiousnest::CuriousModule::init( SLIInterpreter* i )
+void curiousnest::CuriousModule::init( SLIInterpreter* i )
 {
-  /* Register a neuron or device model.
-     Give node type as template argument and the name as second argument.
-  */
-  nest::kernel().model_manager.register_node_model< pif_psc_alpha >( "pif_psc_alpha" );
-
-  /* Register a synapse type.
+  /* Register the synapse type.
      Give synapse type as template argument and the name as second argument.
 
      There are two choices for the template argument:
@@ -104,10 +78,7 @@ curiousnest::CuriousModule::init( SLIInterpreter* i )
      even further, but limits the number of available rports. Please see
      Kunkel et al, Front Neurofinfom 8:78 (2014), Sec 3.3.2, for details.
   */
-  nest::kernel().model_manager.register_connection_model< DropOddSpikeConnection< nest::TargetIdentifierPtrRport > >(
-    "drop_odd_synapse" );
+  nest::kernel().model_manager.register_connection_model< CuriousSyn< nest::TargetIdentifierPtrRport > >( "curious_syn" );
+}
 
-  // Register connection rule.
-  nest::kernel().connection_manager.register_conn_builder< StepPatternBuilder >( "step_pattern" );
-
-} // CuriousModule::init()
+//CuriousModule::init()

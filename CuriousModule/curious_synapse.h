@@ -1,11 +1,7 @@
 #ifndef CURIOUS_SYNAPSE
 #define CURIOUS_SYNAPSE
 
-#include "slifunction.h"
-#include "slimodule.h"
-
 #include "connection.h"
-#include "static_connection.h"
 
 using namespace std;
 
@@ -18,25 +14,23 @@ namespace curiousnest
   class CuriousSynapse : public nest::Connection< targetidentifierT >
   {
     private:
-      map<string, double> curious_properties_;
-      vector< nest::spikecounter > spikes;
+      map< string, double > curious_properties_;
+      list< double > pre_syn_spikes_;
+      list< double > post_syn_spikes_;
 
     public:
 
       CuriousSynapse (map<string, double> curious_properties) {}
       ~CuriousSynapse () {}
 
-      void update_weight( const thread tr,
-                          const std::vector< spikecounter >& spikes,
-                          const double t_trig,
-                          const CommonProperties& cp );
+      void update_weight ( const nest::thread tr,
+                           const CommonProperties& cp );
 
       void send ( nest::Event& e,
                   double_t t_lastspike,
-                  const CommonProperties& cp
-                  const nest::thread thr,
-                  const std:vector< nest::spikecounter >& spikes );
-
+                  const CommonProperties& cp,
+                  const nest::thread thr );
+      /*
       //! Store connection status information in dictionary
       void get_status (DictionaryDatum& d) const;
 
@@ -45,8 +39,18 @@ namespace curiousnest
        *
        * @param d Dictionary with new parameter values
        * @param cm ConnectorModel is passed along to validate new delay values
-       */
+
       void set_status (const DictionaryDatum& d, nest::ConnectorModel& cm);
+      */
+      void get_pre_syn_spikes ()
+      {
+        return pre_syn_spikes_;
+      }
+
+      void get_post_syn_spikes ()
+      {
+        return post_syn_spikes_;
+      }
 
       void get_curious_properties ()
       {
@@ -104,12 +108,13 @@ namespace curiousnest
   };
 
   template <typename targetidentifierT>
-  void curiousnest::CuriousSynapse< targetidentifierT >::send ( nest::Event& e,
-                                                                double_t t_lastspike,
-                                                                const CommonProperties& cp,
-                                                                const nest::thread thr )
+  inline void curiousnest::CuriousSynapse< targetidentifierT >::send ( nest::Event& e,
+                                                                       double_t t_lastspike,
+                                                                       const CommonProperties& cp,
+                                                                       const nest::thread thr )
   {
-    update_weight(tr, &spikes, t_lastspike, &cp);
+    pres_syn_spikes_.push_front(t_lastspike);
+    update_weight(thr, pres_syn_spikes_, &cp);
 
     e.set_weight(weight_);
     e.set_delay_steps(Connection::get_delay_steps());
@@ -118,6 +123,7 @@ namespace curiousnest
     e();
   }
 
+/*
   template <typename targetidentifierT>
   void CuriousSynapse< targetidentifierT >::get_status(DictionaryDatum& d) const
   {
@@ -133,6 +139,7 @@ namespace curiousnest
     ConnectionBase::set_status(d, cm);
     updateValue< double >(d, nest::names::weight, weight_);
   }
+*/
 }
 
 #endif

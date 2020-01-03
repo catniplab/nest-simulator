@@ -80,5 +80,3 @@ void curiousnest::CuriousModule::init( SLIInterpreter* i )
   */
   nest::kernel().model_manager.register_connection_model< CuriousSynapse< nest::TargetIdentifierPtrRport > >( "curious_synapse" );
 }
-
-//curiousnest::CuriousModule::init()

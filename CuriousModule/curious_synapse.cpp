@@ -76,25 +76,18 @@ double learning_curve (double dt, double a_plus, double a_minus, double tau_plus
   }
 }
 
-double compute_eligibility(const std::vector< nest::spikecounter > &spikes, const double t_trig)
+double compute_eligibility(const vector< nest::spikecounter > &spikes, map< string, double > cur_p)
 {
   return 1.0;
-}
-
-double update_weight(double w, double lr, double r, double c, double w0, double w1, double e)
-{
-  return w + lr*e*(r + c*fabs(w0 - w1));
 }
 
 template <typename targetidentifierT>
 void curiousnest::CuriousSynapse< targetidentifierT >::update_weight
 ( const nest::thread tr,
-  const std::vector< nest::spikecounter >& spikes,
-  const double t_trig,
-  const nest::CommonSynapseProperties& cp
+  const CommonProperties& cp
 )
 {
-  double eligibility = compute_eligibility(&spikes, t_trig, curious_properties_);
+  double eligibility = compute_eligibility(spikes, curious_properties_);
 
   double w = weight_;
   double lr = curious_properties_["learning_rate"];
